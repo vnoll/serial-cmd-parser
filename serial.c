@@ -34,28 +34,28 @@ ISR(USART_RX_vect)
 	
 	switch ( RX_STATE ) {
 		case NEW_DATA:
-		cmd_idx = 0;
-		if ( ReceivedByte == STARTMARKER ) RX_STATE = DATA_ARRIVED;
+			cmd_idx = 0;
+			if ( ReceivedByte == STARTMARKER ) RX_STATE = DATA_ARRIVED;
 		break;
 		
 		case DATA_ARRIVED:
-		cmd[cmd_idx] = ReceivedByte;
-		if ( ReceivedByte == ENDMARKER ) {
-			RX_STATE = NEW_DATA;
-			cmd[cmd_idx] = '\0';
-			cmd_idx = 0;
-			RxIsComplete = true;
-			strcpy(cmd_updated,cmd);
-		}
-		else {
-			if ( ReceivedByte == BACKSPACE ) {
-				if ( --cmd_idx < 0 ) RX_STATE = NEW_DATA;
+			cmd[cmd_idx] = ReceivedByte;
+			if ( ReceivedByte == ENDMARKER ) {
+				RX_STATE = NEW_DATA;
+				cmd[cmd_idx] = '\0';
+				cmd_idx = 0;
+				RxIsComplete = true;
+				strcpy(cmd_updated,cmd);
 			}
 			else {
-				cmd_idx++;
-				if( cmd_idx >= CMD_MAX_LENGHT ) RX_STATE = NEW_DATA;
+				if ( ReceivedByte == BACKSPACE ) {
+					if ( --cmd_idx < 0 ) RX_STATE = NEW_DATA;
+				}
+				else {
+					cmd_idx++;
+					if( cmd_idx >= CMD_MAX_LENGHT ) RX_STATE = NEW_DATA;
+				}
 			}
-		}
 		break;
 	}
 }

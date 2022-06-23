@@ -69,10 +69,9 @@ void setup()
 
 int main (void)
 {
-	enum commands cmd_local, cmd_local_last;	
+	enum commands cmd_local, cmd_local_last;
 	enum main_sequence {WAIT_RX_COMPLETE, DECODER_FUNCTION, EXECUTE_FUNCTION_LOOP};	
-	enum main_sequence SEQUENCE = WAIT_RX_COMPLETE;
-	
+	enum main_sequence SEQUENCE = WAIT_RX_COMPLETE;	
 	cmd_local = STOP_FUNCTION;
 	cmd_local_last = cmd_local;
 	
@@ -88,18 +87,18 @@ int main (void)
 					RxIsComplete = false;
 					SEQUENCE = DECODER_FUNCTION;
 				}
-				break;
+			break;
 				
 			case DECODER_FUNCTION:			 
 					
-					cmd_local_last = cmd_local;	
-					cmd_local = discoveryCommand(cmd_updated);					
-					if (cmd_local == INVALID){
-						USART_Transmit("\r--> Command Invalidated <--");
-						USART_Transmit("\rcmd: ");
-					} else USART_Transmit("\rcmd: ");									
+				cmd_local_last = cmd_local;	
+				cmd_local = discoveryCommand(cmd_updated);					
+				if (cmd_local == INVALID){
+					USART_Transmit("\r--> Command Invalidated <--");
+					USART_Transmit("\rcmd: ");
+				} else USART_Transmit("\rcmd: ");									
 					SEQUENCE = EXECUTE_FUNCTION_LOOP;
-				break;
+			break;
 			
 			case EXECUTE_FUNCTION_LOOP:
 		
@@ -135,6 +134,8 @@ int main (void)
 					break;
 				}
 				if (RxIsComplete) SEQUENCE = WAIT_RX_COMPLETE;
+			break;
 			}
+		}
 	}
 }
